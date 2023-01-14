@@ -1,0 +1,7 @@
+//pendind task
+
+// register api
+// store img in db
+// apply api
+
+// today resolve bug from backend
