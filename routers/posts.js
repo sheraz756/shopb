@@ -10,19 +10,30 @@ const jwt = require("jsonwebtoken"); // const middleware = (req,res,next)=>{cons
 const cokiparser = require("cookie-parser");
 const jobPost = require("../models/postSchema");
 const app = express();
-app.use('/',express.static('uploads'))
+
 // app.use(bodyparser)
 const protect = require("../middleware/authMiddleware.js");
 var nodemailer = require("nodemailer");
 var handlebars = require("handlebars");
 const { VERSION } = require("handlebars/runtime");
-const multer  = require('multer')
-const upload = multer({ dest: 'uploads/' })
+const multer = require("multer");
+const upload = multer({ dest: "uploads" });
 
 // router.get('/findjobs',(req,res)=>{res.send('here you can see jobs offeredd')});
+// var storage = multer.diskStorage({
+//   destination: function (req, file, cb) {
+//      cb(null, 'uploads');
+//   },
+//   filename: function (req, file, cb) {
+//      cb(null, Date.now() + '-' + file.originalname);
+//   }
+// });
 
 // fill post job form
-router.post("/postjob",upload.single("postimg"), protect, async (req, res) => {
+router.post("/postjob", upload.single("postimg"), protect, async (req, res) => {
+  console.log("req.body content", req.body);
+  console.log("req.file is", req.file);
+  console.log("req.file.path is :", req.file.path);
   const {
     shopname,
     jobname,
@@ -32,19 +43,43 @@ router.post("/postjob",upload.single("postimg"), protect, async (req, res) => {
     workersReq,
     experience,
     salary,
-    postimg = req.file.path,
     description,
   } = req.body;
-  // const {postimg} = 
-  console.log(req.body,req.file)
-  if (!shopname || !jobname || !timing || !shoploc || !workersReq || !salary ||!postimg) {
+  // const {postimg} = req.file.path
+
+  console.log("req.file.path before initialied", req.file.path);
+  const postimg = req.file.path;
+  console.log("postimg after", postimg);
+  // console.log(req.body,req.file)
+  if (
+    !shopname ||
+    !jobname ||
+    !timing ||
+    !shoploc ||
+    !workersReq ||
+    !salary ||
+    !postimg
+  ) {
     //6 required credentials
+    console.log("fill all required fields");
     return res.status(422).json({ error: "Please fill the required fields" });
   }
   try {
-    const post = new jobPost(req.body);
-    // const post1 = new jobPost(req.file);
-    // const postimg = new jobPost(req.file.path);  //no need to write all values
+    console.log("in try");
+    const post = new jobPost({
+      shopname,
+      jobname,
+      timing,
+      shoploc,
+      age,
+      workersReq,
+      experience,
+      salary,
+      description,
+      postimg,
+    });
+    console.log(req.file);
+    // const post = new jobPost(req.body,req.file.path)
     post.user_id = req.user._id; // post.user_id=currentuser;
     post.username = req.user.name;
     post.user_email = req.user.email;
@@ -53,21 +88,25 @@ router.post("/postjob",upload.single("postimg"), protect, async (req, res) => {
     // post.user_email = req.user.email;
     // post.userpic = req.user.userimg;             //same userimgfield schemain err
     await post.save();
+    console.log("job posted");
     return res.status(200).json({ message: "Job Posted Successfully🤎👍" });
   } catch (err) {
     console.log(err);
     return res.status(400).json({ err });
   }
-  
 });
 
 //update post
 router.put("/post/:id", protect, async (req, res) => {
   try {
     const update = req.body; // {timing:12am to 6pm, shopname:newname} things to updated
-    const post = await jobPost.findByIdAndUpdate({_id: req.params.id}, update, {
-      new: true,
-    }); //args,(req.params error)
+    const post = await jobPost.findByIdAndUpdate(
+      { _id: req.params.id },
+      update,
+      {
+        new: true,
+      }
+    ); //args,(req.params error)
     console.log("user after findByIdAndUpdate", post);
     res.status(200).json({ success: true, UpdatedPost: post });
   } catch (error) {
@@ -97,12 +136,12 @@ router.delete("/post/:id", protect, async (req, res) => {
 
 //get my posts
 
-router.get("/myposts",protect,async (req, res) => {
+router.get("/myposts", protect, async (req, res) => {
   try {
     // console.log("req.user in myposts:", req.user)
-    let posts = await jobPost.find( {user_id: req.user._id});
+    let posts = await jobPost.find({ user_id: req.user._id });
     const allPosts = posts.map((post) => new jobPost(post));
-//     console.log("Your posted jobs are : ", posts); //empty array userid nothing
+    //     console.log("Your posted jobs are : ", posts); //empty array userid nothing
     res.json(allPosts);
   } catch (error) {
     console.log("error in get my post", error);
@@ -112,7 +151,7 @@ router.get("/myposts",protect,async (req, res) => {
 
 //get all posts
 
-router.get("/posts",protect,async (req, res) => {
+router.get("/posts", protect, async (req, res) => {
   try {
     const post = await jobPost.find({});
     res.status(200).json({ success: true, AllPosts: post }); //can pate null logic

@@ -10,7 +10,7 @@ const corsOption = {
   credentials: true,
 };
 app.use(cors(corsOption));
-
+app.use("/uploads", express.static("uploads"));
 dotenv.config({ path: "./config.env" });
 require("./db/conn");
 app.use(require("./routers/auth"));
