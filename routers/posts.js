@@ -83,10 +83,11 @@ router.post("/postjob", upload.single("postimg"), protect, async (req, res) => {
     post.user_id = req.user._id; // post.user_id=currentuser;
     post.username = req.user.name;
     post.user_email = req.user.email;
+    post.userpic = req.user.userimg; 
     // post.user_id = req.user._id; // post.user_id=currentuser;
     // post.username = req.user.name;
     // post.user_email = req.user.email;
-    // post.userpic = req.user.userimg;             //same userimgfield schemain err
+                //same userimgfield schemain err
     await post.save();
     console.log("job posted");
     return res.status(200).json({ message: "Job Posted Successfully🤎👍" });
@@ -140,9 +141,9 @@ router.get("/myposts", protect, async (req, res) => {
   try {
     // console.log("req.user in myposts:", req.user)
     let posts = await jobPost.find({ user_id: req.user._id });
-    const allPosts = posts.map((post) => new jobPost(post));
+    // const allPosts = posts.map((post) => new jobPost(post));
     //     console.log("Your posted jobs are : ", posts); //empty array userid nothing
-    res.json(allPosts);
+    res.json(posts);
   } catch (error) {
     console.log("error in get my post", error);
     res.status(400).json({ error: "Unable to get posts" });
@@ -198,7 +199,7 @@ router.post("/applyjob", protect, async (req, res) => {
         secure: true,
         auth: {
           user: "bkbutt444@gmail.com",
-          pass: "nkdzbxmyuusdjtwg",
+          pass: "fhlnmrizpgnbztjj",
         },
       });
       readHTMLFile("./htmlTemplate/email.html", function (err, html) {

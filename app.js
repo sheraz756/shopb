@@ -11,6 +11,7 @@ const corsOption = {
 };
 app.use(cors(corsOption));
 app.use("/uploads", express.static("uploads"));
+app.use("/usrimg", express.static("usrimg"));
 dotenv.config({ path: "./config.env" });
 require("./db/conn");
 app.use(require("./routers/auth"));

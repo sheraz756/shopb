@@ -9,34 +9,38 @@ const cokiparser = require("cookie-parser");
 const jobPost = require("../models/postSchema");
 // const profile = require('../models/profileSchema');
 const protect = require("../middleware/authMiddleware");
-
+const multer = require("multer");
+const upload = multer({ dest: "usrimg" });
 //all done execution
 //sgnup
-router.post("/register", async (req, res) => {
+router.post("/register",upload.single("userimg"), async (req, res) => {
   console.log("in register");
   const {
     email,
     password,
     cpassword,
     name,
-    userimg,
     city,
     dob,
     address,
     phoneno,
     qualification,
   } = req.body;
-
-  if (!email || !password || !cpassword || !name || !city || !dob || !address) {
+  console.log("req.file.path before initialied", req.file.path);
+  const userimg = req.file.path;
+  console.log("postimg after", userimg);
+  if (!email || !password || !cpassword || !name || !city || !dob || !address||!userimg) {
     return res.status(422).json({ error: "Please fill the required fields" });
   }
   try {
     const userExists = await User.findOne({ email: email });
     if (userExists) {
       return res.status(422).json({ error: "Email User already exists!" });
-    } else if (password != cpassword) {
+    } 
+    else if (password != cpassword) {
       return res.status(422).json({ error: "passwords dont match!" });
-    } else {
+    } 
+    else {
       const user = new User({
         email,
         password,
@@ -51,7 +55,7 @@ router.post("/register", async (req, res) => {
       }); //dbname:nameoffrontendField
       //pre middleware for password hsshing will be called before save()
       user.token = await user.generateAuthToken();
-      user.userimg = "https://w7.pngwing.com/pngs/574/369/png-transparent-avatar-computer-icons-user-random-icons-purple-blue-heroes-thumbnail.png"
+      // user.userimg = "https://w7.pngwing.com/pngs/574/369/png-transparent-avatar-computer-icons-user-random-icons-purple-blue-heroes-thumbnail.png"
       await user.save();
       res.status(201).json({ message: "User registered successfully 🤎" });
       console.log("registered");

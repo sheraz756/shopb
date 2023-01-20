@@ -11,7 +11,7 @@ const jobPost = require("../models/postSchema");
 const e = require("express");
 const protect = require("../middleware/authMiddleware.js");
 const multer  = require('multer')
-const uplod = multer({ dest: 'usrimg/' })
+const upload = multer({ dest: 'usrimg/' })
 
 // const User = require('../models/userSchema');
 
@@ -74,7 +74,7 @@ router.put("/user/:id", protect, async (req, res) => {
 
 
   
-router.put("/userpic/:id",uplod.single("userimg"), protect, async (req, res) => {
+router.put("/userpic/:id",upload.single("userimg"), protect, async (req, res) => {
  
   try{
     const update = req.file

@@ -21,7 +21,8 @@ const postSchema = mongoose.Schema({
     description:{ type: String },
     user_email:{ type: String},
     user_id:{ type: String}, 
-    username:{ type: String}
+    username:{ type: String},
+    userpic:{ type: String}
 });
 
 
