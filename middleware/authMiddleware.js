@@ -27,6 +27,7 @@ const protect = async (req, res, next) => {
         address,
         phoneno,
         qualification,
+        userimg
       } = currentuser;
       req.user = {
         _id,
@@ -39,8 +40,9 @@ const protect = async (req, res, next) => {
         address,
         phoneno,
         qualification,
+        userimg
       };
-      console.log("user active:", req.user);
+      // console.log("user active:", req.user);
       next();
     } catch (error) {
       return res.status(401).json({

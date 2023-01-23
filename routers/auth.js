@@ -12,7 +12,7 @@ const protect = require("../middleware/authMiddleware");
 const multer = require("multer");
 const upload = multer({ dest: "usrimg" });
 //all done execution
-//sgnup
+//sgnup 
 router.post("/register",upload.single("userimg"), async (req, res) => {
   console.log("in register");
   const {
@@ -26,9 +26,9 @@ router.post("/register",upload.single("userimg"), async (req, res) => {
     phoneno,
     qualification,
   } = req.body;
-  console.log("req.file.path before initialied", req.file.path);
+  console.log("req.file.path before initialied:", req.file.path);
   const userimg = req.file.path;
-  console.log("postimg after", userimg);
+  console.log("userimg after", userimg);
   if (!email || !password || !cpassword || !name || !city || !dob || !address||!userimg) {
     return res.status(422).json({ error: "Please fill the required fields" });
   }
@@ -38,6 +38,7 @@ router.post("/register",upload.single("userimg"), async (req, res) => {
       return res.status(422).json({ error: "Email User already exists!" });
     } 
     else if (password != cpassword) {
+      console.log("passwords dont match")
       return res.status(422).json({ error: "passwords dont match!" });
     } 
     else {
@@ -46,12 +47,11 @@ router.post("/register",upload.single("userimg"), async (req, res) => {
         password,
         cpassword,
         name,
-        userimg,
         city,
         dob,
         address,
         phoneno,
-        qualification,
+        qualification,userimg
       }); //dbname:nameoffrontendField
       //pre middleware for password hsshing will be called before save()
       user.token = await user.generateAuthToken();
