@@ -47,9 +47,9 @@ router.post("/postjob", upload.single("postimg"), protect, async (req, res) => {
   } = req.body;
   // const {postimg} = req.file.path
 
-  console.log("req.file.path before initialied", req.file.path);
+  // console.log("req.file.path before initialied", req.file.path);
   const postimg = req.file.path;
-  console.log("postimg after", postimg);
+  // console.log("postimg after", postimg);
   // console.log(req.body,req.file)
   if (
     !shopname ||
@@ -82,14 +82,14 @@ router.post("/postjob", upload.single("postimg"), protect, async (req, res) => {
     // const post = new jobPost(req.body,req.file.path)
     post.user_id = req.user._id; // post.user_id=currentuser;
     post.username = req.user.name;
-    post.user_email = req.user.email;
+    post.receiverEmail = req.user.email;
     post.userpic = req.user.userimg; 
     // post.user_id = req.user._id; // post.user_id=currentuser;
     // post.username = req.user.name;
     // post.user_email = req.user.email;
                 //same userimgfield schemain err
     await post.save();
-    console.log("job posted");
+    console.log("job posted",post);
     return res.status(200).json({ message: "Job Posted Successfully🤎👍" });
   } catch (err) {
     console.log(err);
@@ -142,7 +142,7 @@ router.get("/myposts", protect, async (req, res) => {
     // console.log("req.user in myposts:", req.user)
     let posts = await jobPost.find({ user_id: req.user._id });
     // const allPosts = posts.map((post) => new jobPost(post));
-    //     console.log("Your posted jobs are : ", posts); //empty array userid nothing
+        // console.log("Your posted jobs are : ", posts); //empty array userid nothing
     res.json(posts);
   } catch (error) {
     console.log("error in get my post", error);
@@ -154,7 +154,7 @@ router.get("/myposts", protect, async (req, res) => {
 
 router.get("/posts", protect, async (req, res) => {
   try {
-    const post = await jobPost.find({});
+    const post = await jobPost.find({ });
     res.status(200).json({ success: true, AllPosts: post }); //can pate null logic
   } catch (error) {
     console.log("error in getting posts");

@@ -1,5 +1,5 @@
-const { default: mongoose } = require('mongoose');
-const mangoose = require('mongoose');
+// const { default: mongoose } = require('mongoose');
+const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
@@ -19,7 +19,7 @@ const postSchema = mongoose.Schema({
     
     salary:{ type: Number ,required:true},
     description:{ type: String },
-    user_email:{ type: String},
+    receiverEmail:{ type: String},
     user_id:{ type: String}, 
     username:{ type: String},
     userpic:{ type: String}
