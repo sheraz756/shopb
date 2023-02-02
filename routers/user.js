@@ -35,7 +35,7 @@ router.get("/user/:id", async (req, res) => {
 
 //update user /anyfield
 
-router.put("/user/:id", protect, async (req, res) => {
+router.put("/user/:id",upload.single("userimg"), protect, async (req, res) => {
   try {
     let update = req.body;
     let user = await User.findByIdAndUpdate(req.params.id, update, {
@@ -72,7 +72,18 @@ router.put("/user/:id", protect, async (req, res) => {
   }
 });
 
-
+router.get("/myuser", protect, async (req, res) => {
+  try {
+    // console.log("req.user in myposts:", req.user)
+    let posts = await User.find({ user_id: req.user._id });
+    // const allPosts = posts.map((post) => new jobPost(post));
+        // console.log("Your posted jobs are : ", posts); //empty array userid nothing
+    res.json(posts);
+  } catch (error) {
+    console.log("error in get my post", error);
+    res.status(400).json({ error: "Unable to get posts" });
+  }
+});
   
 router.put("/userpic/:id",upload.single("userimg"), protect, async (req, res) => {
  
