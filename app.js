@@ -11,8 +11,9 @@ const corsOption = {
   credentials: true,
 };
 app.use(cors(corsOption));
-app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
-app.use("/usrimg", express.static("usrimg"));
+const dirname = path.resolve();
+        app.use('/uploads', express.static(path.join(dirname, '/uploads')));
+        app.use('/usrimg', express.static(path.join(dirname, '/usrimg')));
 dotenv.config({ path: "./config.env" });
 require("./db/conn");
 app.use(require("./routers/auth"));
