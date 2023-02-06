@@ -17,7 +17,28 @@ var nodemailer = require("nodemailer");
 var handlebars = require("handlebars");
 const { VERSION } = require("handlebars/runtime");
 const multer = require("multer");
-const upload = multer({ dest: "uploads" });
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "uploads");
+  },
+  filename: function (req, file, cb) {
+    cb(null, new Date().toISOString() + file.originalname);
+  }
+});
+const fileFilter = (req, file, cb) => {
+  if (file.mimetype === "image/jpeg" || file.mimetype === "image/png") {
+    cb(null, true);
+  } else {
+    cb(null, false);
+  }
+};
+const upload = multer({
+  storage: storage,
+  limits: {
+    fileSize: 1024 * 1024 * 5
+  },
+  fileFilter: fileFilter
+});
 
 // router.get('/findjobs',(req,res)=>{res.send('here you can see jobs offeredd')});
 // var storage = multer.diskStorage({
@@ -33,7 +54,7 @@ const upload = multer({ dest: "uploads" });
 router.post("/postjob", upload.single("postimg"), protect, async (req, res) => {
   console.log("req.body content", req.body);
   console.log("req.file is", req.file);
-  console.log("req.file.path is :", req.file.path);
+  console.log("req.file.path is :", req.file);
   const {
     shopname,
     jobname,
@@ -48,7 +69,7 @@ router.post("/postjob", upload.single("postimg"), protect, async (req, res) => {
   // const {postimg} = req.file.path
 
   // console.log("req.file.path before initialied", req.file.path);
-  const postimg = req.file.path;
+  const postimg = req.file;
   // console.log("postimg after", postimg);
   // console.log(req.body,req.file)
   if (

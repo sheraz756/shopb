@@ -73,9 +73,14 @@ router.put("/user/:id",upload.single("userimg"), protect, async (req, res) => {
 });
 
 router.get("/myuser", protect, async (req, res) => {
+  jwt.verify(req.token, process.env.SECRET_KEY, (err, decoded) => {
+    
+    if (err) {
+      return res.sendStatus(403);
+    }})
   try {
     // console.log("req.user in myposts:", req.user)
-    let posts = await User.find({ user_id: req.user._id });
+    let posts = await User.find({ userId:decoded.userId });
     // const allPosts = posts.map((post) => new jobPost(post));
         // console.log("Your posted jobs are : ", posts); //empty array userid nothing
     res.json(posts);
