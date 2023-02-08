@@ -6,13 +6,11 @@ app.use(express.json());
 const bcryptjs = require("bcryptjs");
 const path = require('path')
 const cors = require("cors");
-
-app.use(function (req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  next();
-});
-
+const corsOption = {
+  origin: "http://localhost:3000",
+  credentials: true,
+};
+app.use(cors(corsOption));
 const dirname = path.resolve();
         app.use('/uploads', express.static(path.join(dirname, '/uploads')));
         app.use('/usrimg', express.static(path.join(dirname, '/usrimg')));
