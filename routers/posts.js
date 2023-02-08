@@ -34,7 +34,7 @@ router.post("/postjob", upload.single("postimg"), protect, async (req, res) => {
   console.log("req.body content", req.body);
   console.log("req.file is", req.file);
   console.log("req.file.path is :", req.file);
-  res.set("Cache-Control", "public, max-age=0");
+  res.set("Cache-Control", "public, max-age=86400");
   const {
     shopname,
     jobname,
